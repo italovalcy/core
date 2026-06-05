@@ -135,6 +135,11 @@ fpm -s dir -t deb -n core \
 	-d "iproute2" \
 	-d "libev4" \
 	-d "nftables" \
+	-d "python3-venv" \
+	-d "python3-yaml >= 6.0.2" \
+	-d "python3-lxml >= 5.4.0" \
+	-d "python3-pyproj >= 3.7.1" \
+	-d "python3-invoke >= 2.2.0" \
 	netns/vnoded=/usr/bin/ \
 	netns/vcmd=/usr/bin/ \
 	package/etc/core.conf=/opt/core/etc/ \
