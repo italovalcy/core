@@ -8,7 +8,7 @@ if [ ! -z "${NO_VENV}" ]; then
   ${PYTHON} -m pip install /opt/core/core-*.whl
   sed -i 's|$DAEMON|/usr/local/bin/core-daemon|g' /lib/systemd/system/core-daemon.service
 else
-  ${PYTHON} -m venv /opt/core/venv
+  ${PYTHON} -m venv --system-site-packages /opt/core/venv
   . /opt/core/venv/bin/activate
   pip install --upgrade pip
   pip install /opt/core/core-*.whl
