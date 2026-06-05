@@ -152,9 +152,7 @@ endef
 fpm: clean-local-fpm
 	cd daemon && poetry build -f wheel
 	$(call fpm-deb)
-	#$(call fpm-rpm)
 	$(call fpm-distributed-deb)
-	#$(call fpm-distributed-rpm)
 
 .PHONY: clean-local-fpm
 clean-local-fpm:
