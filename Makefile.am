@@ -135,6 +135,7 @@ fpm -s dir -t deb -n core \
 	-d "iproute2" \
 	-d "libev4" \
 	-d "nftables" \
+	-d "proj-bin" \
 	-d "python3-venv" \
 	-d "python3-yaml >= 6.0.2" \
 	-d "python3-lxml >= 5.4.0" \
