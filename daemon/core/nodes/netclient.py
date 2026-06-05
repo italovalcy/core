@@ -32,6 +32,15 @@ class LinuxNetClient:
         """
         self.run(f"{IP} route replace {route} dev {device}")
 
+    def route_show(self, device: str) -> None:
+        """
+        Show routes for a device.
+
+        :param device: device to add route to
+        :return: route information
+        """
+        return self.run(f"{IP} route show dev {device}")
+
     def device_up(self, device: str) -> None:
         """
         Bring a device up.
