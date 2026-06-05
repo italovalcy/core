@@ -53,6 +53,7 @@ class Rj45Node(CoreNodeBase):
         self.iface.transport_type = TransportType.RAW
         self.old_up: bool = False
         self.old_addrs: list[tuple[str, str | None]] = []
+        self.old_routes: list[str] = []
 
     def startup(self) -> None:
         """
@@ -160,13 +161,14 @@ class Rj45Node(CoreNodeBase):
         # TODO: save/restore the PROMISC flag
         self.old_up = False
         self.old_addrs: list[tuple[str, str | None]] = []
+        self.old_routes: list[str] = []
         localname = self.iface.localname
         output = self.net_client.address_show(localname)
         for line in output.split("\n"):
             items = line.split()
             if len(items) < 2:
                 continue
-            if items[1] == f"{localname}:":
+            if items[1] == f"{localname}:" or items[1].startswith(f"{localname}@"):
                 flags = items[2][1:-1].split(",")
                 if "UP" in flags:
                     self.old_up = True
@@ -179,7 +181,18 @@ class Rj45Node(CoreNodeBase):
                 if items[1][:4] == "fe80":
                     continue
                 self.old_addrs.append((items[1], None))
-        logger.info("saved rj45 state: addrs(%s) up(%s)", self.old_addrs, self.old_up)
+        output = self.net_client.route_show(localname)
+        for line in output.split("\n"):
+            line = line.strip()
+            if not line:
+                continue
+            self.old_routes.append(line)
+        logger.info(
+            "saved rj45 state: addrs(%s) up(%s) routes(%s)",
+            self.old_addrs,
+            self.old_up,
+            self.old_routes,
+        )
 
     def restore_state(self) -> None:
         """
@@ -194,6 +207,8 @@ class Rj45Node(CoreNodeBase):
             self.net_client.create_address(localname, addr[0], addr[1])
         if self.old_up:
             self.net_client.device_up(localname)
+        for route in self.old_routes:
+            self.net_client.create_route(route, localname)
 
     def setposition(self, x: float = None, y: float = None, z: float = None) -> None:
         """
